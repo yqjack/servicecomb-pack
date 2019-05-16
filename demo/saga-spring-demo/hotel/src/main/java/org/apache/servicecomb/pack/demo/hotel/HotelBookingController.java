@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -31,30 +30,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class HotelBookingController {
-  @Autowired
-  private HotelBookingService service;
+	@Autowired
+	private HotelBookingService service;
 
-  private final AtomicInteger id = new AtomicInteger(0);
+	private final AtomicInteger id = new AtomicInteger(0);
 
-  @CrossOrigin
-  @GetMapping("/bookings")
-  List<HotelBooking> getAll() {
-    return new ArrayList<>(service.getAllBookings());
-  }
+	@CrossOrigin
+	@GetMapping("/bookings")
+	List<HotelBooking> getAll() {
+		return new ArrayList<>(service.getAllBookings());
+	}
 
-  @PostMapping("/order/{name}/{rooms}")
-  HotelBooking order(@PathVariable String name, @PathVariable Integer rooms) {
-    HotelBooking booking = new HotelBooking();
-    booking.setId(id.incrementAndGet());
-    booking.setName(name);
-    booking.setAmount(rooms);
-    service.order(booking);
-    return booking;
-  }
+	@GetMapping("/order/{name}/{rooms}")
+	HotelBooking order(@PathVariable String name, @PathVariable Integer rooms) {
+		HotelBooking booking = new HotelBooking();
+		booking.setId(id.incrementAndGet());
+		booking.setName(name);
+		booking.setAmount(rooms);
+		try {
+			service.order(booking);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return booking;
+	}
 
-  @DeleteMapping("/bookings")
-  void clear() {
-    service.clearAllBookings();
-    id.set(0);
-  }
+	@DeleteMapping("/bookings")
+	void clear() {
+		service.clearAllBookings();
+		id.set(0);
+	}
 }

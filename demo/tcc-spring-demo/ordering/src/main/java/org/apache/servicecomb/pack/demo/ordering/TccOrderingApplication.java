@@ -17,14 +17,23 @@
 
 package org.apache.servicecomb.pack.demo.ordering;
 
-import org.apache.servicecomb.pack.omega.spring.EnableOmega;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@EnableOmega
+@EnableEurekaClient
 public class TccOrderingApplication {
   public static void main(String[] args) {
     SpringApplication.run(TccOrderingApplication.class, args);
+  }
+  @Bean(name = "restTemplate")
+  @LoadBalanced
+  RestTemplate initRestTemplate(@Qualifier("omegaRestTemplate") RestTemplate omegaRestTemplate) {
+    return omegaRestTemplate;
   }
 }

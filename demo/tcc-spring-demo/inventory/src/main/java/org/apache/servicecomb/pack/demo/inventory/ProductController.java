@@ -35,7 +35,7 @@ public class ProductController {
 
   private final AtomicInteger id = new AtomicInteger(0);
 
-  @PostMapping("/order/{userName}/{productName}/{units}")
+  @GetMapping("/order/{userName}/{productName}/{units}")
   @ResponseBody
   public ProductOrder updateInventory(@PathVariable String userName,
       @PathVariable String productName, @PathVariable Integer units) {

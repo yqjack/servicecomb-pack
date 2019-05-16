@@ -20,6 +20,15 @@ spring:
   cloud:
     consul:
       enabled: false
+server: 
+  port: 8091
 alpha:
   cluster:
-    address: alpha-server.servicecomb.io:8080
+    address: 127.0.0.1:8081
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+omega:
+  enable: true

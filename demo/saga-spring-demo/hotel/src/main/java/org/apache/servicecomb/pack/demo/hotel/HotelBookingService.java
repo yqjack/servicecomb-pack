@@ -22,33 +22,36 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 class HotelBookingService {
-  private Map<Integer, HotelBooking> bookings = new ConcurrentHashMap<>();
+	private Map<Integer, HotelBooking> bookings = new ConcurrentHashMap<>();
+	Random rand = new Random();
 
-  @Compensable(compensationMethod = "cancel")
-  void order(HotelBooking booking) {
-    if (booking.getAmount() > 2) {
-      throw new IllegalArgumentException("can not order the rooms large than two");
-    }
-    booking.confirm();
-    bookings.put(booking.getId(), booking);
-  }
+	@Compensable(compensationMethod = "cancel")
+	void order(HotelBooking booking) {
+		if (rand.nextInt(10) <= 1) {
+			throw new RuntimeException("HotelBookingService Error");
+		}
+		booking.confirm();
+		bookings.put(booking.getId(), booking);
+	}
 
-  void cancel(HotelBooking booking) {
-    Integer id = booking.getId();
-    if (bookings.containsKey(id)) {
-      bookings.get(id).cancel();
-    }
-  }
+	void cancel(HotelBooking booking) {
+		System.out.println("HotelBookingService.cancel............");
+		Integer id = booking.getId();
+		if (bookings.containsKey(id)) {
+			bookings.get(id).cancel();
+		}
+	}
 
-  Collection<HotelBooking> getAllBookings() {
-    return bookings.values();
-  }
+	Collection<HotelBooking> getAllBookings() {
+		return bookings.values();
+	}
 
-  void clearAllBookings() {
-    bookings.clear();
-  }
+	void clearAllBookings() {
+		bookings.clear();
+	}
 }

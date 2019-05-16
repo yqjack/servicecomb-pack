@@ -114,11 +114,10 @@ CREATE TABLE IF NOT EXISTS tcc_tx_event (
   UNIQUE INDEX tcc_tx_event_index (globalTxId, localTxId, parentTxId, txType)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS master_lock (
-  serviceName varchar(36) not NULL,
-  expireTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  lockedTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  instanceId  varchar(255) not NULL,
-  PRIMARY KEY (serviceName)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS  `saga`.`master_lock` (
+                             `idmaster_lock` VARCHAR(36) NOT NULL,
+                             `master_lockcol` TIMESTAMP(3) NULL,
+                             `master_lockcol1` TIMESTAMP(3) NULL,
+                             `master_lockcol2` VARCHAR(255) NULL,
+                             PRIMARY KEY (`idmaster_lock`))ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

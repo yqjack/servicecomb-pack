@@ -15,12 +15,12 @@
 ## limitations under the License.
 ## ---------------------------------------------------------------------------
 server:
-  port: 8090
+  port: 8082
 
 alpha:
   server:
     host: 0.0.0.0
-    port: 8080
+    port: 8081
 
 spring:
   datasource:
@@ -40,10 +40,16 @@ spring:
 
 eureka:
   client:
-    enabled: false
+    enabled: true
+    service-url:
+      defaultZone: http://192.168.0.5:8761/eureka
   instance:
     metadataMap:
+      servicecomb-alpha-server-port: ${alpha.server.port}
       servicecomb-alpha-server: ${alpha.server.host}:${alpha.server.port}
+      prefer-ip-address: true
+      hostname: 127.0.0.1
+
 
 management:
   endpoints:
@@ -81,11 +87,12 @@ spring:
 spring:
   profiles: mysql
   datasource:
-    username: saga
-    password: password
-    url: jdbc:mysql://mysql.servicecomb.io:3306/saga?useSSL=false
+    username: root
+    password: 1234
+    url: jdbc:mysql://127.0.0.1:3306/saga?useSSL=false
     platform: mysql
     continue-on-error: false
+    driverclassname: com.mysql.jdbc.Driver
   jpa:
     properties:
       eclipselink:

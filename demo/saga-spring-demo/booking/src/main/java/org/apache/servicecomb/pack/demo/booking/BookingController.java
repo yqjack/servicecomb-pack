@@ -18,12 +18,16 @@
 package org.apache.servicecomb.pack.demo.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.discovery.DiscoveryClient;
+
 import org.apache.servicecomb.pack.omega.context.annotations.SagaStart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,24 +49,20 @@ public class BookingController {
   @Value("${hotel.service.address:http://hotel.servicecomb.io:8080}")
   private String hotelServiceUrl;
 
+ 
   @Autowired
+  @Qualifier("restTemplate")
   private RestTemplate template;
 
+
   @SagaStart
-  @PostMapping("/booking/{name}/{rooms}/{cars}")
+  @GetMapping("/booking/{name}/{rooms}/{cars}")
   public String order(@PathVariable String name,  @PathVariable Integer rooms, @PathVariable Integer cars) {
-    template.postForEntity(
-        carServiceUrl + "/order/{name}/{cars}",
+    template.getForEntity("http://CAR/order/"+name+"/"+cars,
         null, String.class, name, cars);
-
-    postCarBooking();
-
-    template.postForEntity(
-        hotelServiceUrl + "/order/{name}/{rooms}",
+    template.getForEntity( "http://HOTEL/order/"+name+"/"+rooms,
         null, String.class, name, rooms);
-
-    postBooking();
-
+    
     return name + " booking " + rooms + " rooms and " + cars + " cars OK";
   }
 

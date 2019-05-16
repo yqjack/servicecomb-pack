@@ -20,22 +20,28 @@ package org.apache.servicecomb.pack.demo.car;
 import org.apache.servicecomb.pack.omega.transaction.annotations.Compensable;
 import org.springframework.stereotype.Service;
 
+
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
 class CarBookingService {
   private Map<Integer, CarBooking> bookings = new ConcurrentHashMap<>();
-
+  Random rand = new Random();
   @Compensable(compensationMethod = "cancel")
   void order(CarBooking booking) {
+	if(rand.nextInt(10)<=1) {
+		throw new RuntimeException("CarBookingService Error");
+	}
     booking.confirm();
     bookings.put(booking.getId(), booking);
   }
 
   void cancel(CarBooking booking) {
+	System.out.println("CarBookingService.........cancel");
     Integer id = booking.getId();
     if (bookings.containsKey(id)) {
       bookings.get(id).cancel();

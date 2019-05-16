@@ -31,29 +31,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class CarBookingController {
-  @Autowired
-  private CarBookingService service;
+	@Autowired
+	private CarBookingService service;
 
-  private final AtomicInteger id = new AtomicInteger(0);
+	private final AtomicInteger id = new AtomicInteger(0);
 
-  @CrossOrigin
-  @GetMapping("/bookings") List<CarBooking> getAll() {
-    return new ArrayList<>(service.getAllBookings());
-  }
+	@CrossOrigin
+	@GetMapping("/bookings")
+	List<CarBooking> getAll() {
+		return new ArrayList<>(service.getAllBookings());
+	}
 
-  @PostMapping("/order/{name}/{cars}")
-  CarBooking order(@PathVariable String name, @PathVariable Integer cars) {
-    CarBooking booking = new CarBooking();
-    booking.setId(id.incrementAndGet());
-    booking.setName(name);
-    booking.setAmount(cars);
-    service.order(booking);
-    return booking;
-  }
+	@GetMapping("/order/{name}/{cars}")
+	CarBooking order(@PathVariable String name, @PathVariable Integer cars) {
+		CarBooking booking = new CarBooking();
+		booking.setId(id.incrementAndGet());
+		booking.setName(name);
+		booking.setAmount(cars);
+		try {
+			service.order(booking);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return booking;
+	}
 
-  @DeleteMapping("/bookings")
-  void clear() {
-    service.clearAllBookings();
-    id.set(0);
-  }
+	@DeleteMapping("/bookings")
+	void clear() {
+		service.clearAllBookings();
+		id.set(0);
+	}
 }

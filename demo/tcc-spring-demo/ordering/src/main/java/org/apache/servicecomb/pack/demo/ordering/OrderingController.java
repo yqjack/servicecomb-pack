@@ -18,10 +18,11 @@ package org.apache.servicecomb.pack.demo.ordering;
 
 import org.apache.servicecomb.pack.omega.context.annotations.TccStart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
@@ -36,22 +37,22 @@ public class OrderingController {
   private String paymentServiceUrl;
 
   @Autowired
+  @Qualifier("restTemplate")
   private RestTemplate restTemplate;
 
   @TccStart
-  @PostMapping("/order/{userName}/{productName}/{productUnit}/{unitPrice}")
+  @GetMapping("/order/{userName}/{productName}/{productUnit}/{unitPrice}")
   @ResponseBody
   public String order(
       @PathVariable String userName,
       @PathVariable String productName, @PathVariable Integer productUnit, @PathVariable Integer unitPrice) {
 
-    restTemplate.postForEntity(
-        inventoryServiceUrl + "/order/{userName}/{productName}/{productUnit}",
+    restTemplate.getForEntity("http://INVENTORY/order/"+userName+"/"+productName+"/"+productUnit,
         null, String.class, userName, productName, productUnit);
 
     int amount = productUnit * unitPrice;
     
-    restTemplate.postForEntity(paymentServiceUrl + "/pay/{userName}/{amount}",
+    restTemplate.getForEntity("http://PAYMENT/pay/"+userName+"/"+productUnit*unitPrice,
         null, String.class, userName, amount);
 
     return userName + " ordering " + productName + " with " + productUnit + " OK";

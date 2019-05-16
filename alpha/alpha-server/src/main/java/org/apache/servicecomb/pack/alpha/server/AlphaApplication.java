@@ -22,8 +22,10 @@ import javax.annotation.PreDestroy;
 import kamon.Kamon;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class AlphaApplication {
   public static void main(String[] args) {
     Kamon.start();

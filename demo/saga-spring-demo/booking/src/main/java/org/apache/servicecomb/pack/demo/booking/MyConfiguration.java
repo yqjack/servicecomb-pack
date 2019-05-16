@@ -16,8 +16,11 @@
  */
 package org.apache.servicecomb.pack.demo.booking;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -32,5 +35,10 @@ public class MyConfiguration {
         registry.addMapping("/**");
       }
     };
+  }
+  @Bean(name = "restTemplate")
+  @LoadBalanced
+  RestTemplate initRestTemplate(@Qualifier("omegaRestTemplate") RestTemplate omegaRestTemplate) {
+    return omegaRestTemplate;
   }
 }

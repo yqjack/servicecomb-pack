@@ -35,7 +35,7 @@ public class PaymentController {
 
   private final AtomicInteger id = new AtomicInteger(0);
 
-  @PostMapping("/pay/{userName}/{amount}")
+  @GetMapping("/pay/{userName}/{amount}")
   @ResponseBody
   public Payment pay(@PathVariable String userName,
       @PathVariable Integer amount) {
